@@ -1,0 +1,139 @@
+package Joueurs;
+
+import org.newdawn.slick.Animation;
+import org.newdawn.slick.SlickException;
+import org.newdawn.slick.SpriteSheet;
+
+import Armes.Armes;
+import Armes.Pistolet;
+import Munitions.Balles;
+import Munitions.Neufmm;
+
+public class Joueur {
+
+	//Initialisation :
+	//************************************************************************************************************
+	//Objects:
+	private SpriteSheet spriteSheet;
+	private Armes armes;
+	public Viseur playerViseur;
+	//Tableaux:
+	public Animation[] playerAnim = new Animation[16];
+	private Armes[] playerWeapons = new Armes[3]; //Tableau contenant les armes du joueur.
+	private int[] playerAmmo = new int[3];	//Tableau contenant le nombre de munitions du joueur pour chaque type d'armes.
+	//Floats:
+	//public float x = 500 , y = 500 ;
+	//public float moveSpeed = 0.5f;
+	private float moveSpeed = 1;
+	private float x = 500 , y = 500 ;
+	//Bytes:
+	public byte vie;
+	public byte direction = 0;
+	private byte nbArmes;//Nombre d'armes que possède le joueur.
+	private byte currentWeapon = 0;//Index de l'arme que le joueur tiens dans les mains.
+	//Boolean:
+	public boolean moving = false;
+	//Strings:
+	private String name;
+	//ints: 
+	public int compteur = 0;
+	//************************************************************************************************************
+	
+	public Joueur(String str)//Constructeur d'un object joueur qui demande un argument (String) qui renseigne le nom du joueur.
+	{
+		for(compteur = 0; compteur >= 3 ; compteur++)
+		{
+			this.playerAmmo[compteur] = 0;
+		}
+		this.name = str;
+		try {
+			this.spriteSheet = new SpriteSheet("Ressources/Perso/pinguin.png", 41, 42);
+			
+		} catch (SlickException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		loadPlayerAnim();
+		this.playerViseur = new Viseur();
+		
+	}
+	
+	public void loadPlayerAnim()//loadPlayerAnim() charge les animations du sprite du joueurs.
+	{
+	
+		this.playerAnim[0] = loadAnimation(spriteSheet, 0, 1, 0);
+	    this.playerAnim[1] = loadAnimation(spriteSheet, 0, 1, 1);
+	    this.playerAnim[2] = loadAnimation(spriteSheet, 0, 1, 2);
+	    this.playerAnim[3] = loadAnimation(spriteSheet, 0, 1, 3);
+	    this.playerAnim[4] = loadAnimation(spriteSheet, 0, 1, 4);
+	    this.playerAnim[5] = loadAnimation(spriteSheet, 0, 1, 5);
+	    this.playerAnim[6] = loadAnimation(spriteSheet, 0, 1, 6);
+	    this.playerAnim[7] = loadAnimation(spriteSheet, 0, 1, 7);
+	    this.playerAnim[8] = loadAnimation(spriteSheet, 1, 7, 0);
+	    this.playerAnim[9] = loadAnimation(spriteSheet, 1, 7, 1);
+	    this.playerAnim[10] = loadAnimation(spriteSheet, 1, 7, 2);
+	    this.playerAnim[11] = loadAnimation(spriteSheet, 1, 7, 3);
+	    this.playerAnim[12] = loadAnimation(spriteSheet, 1, 7, 4);
+	    this.playerAnim[13] = loadAnimation(spriteSheet, 1, 7, 5);
+	    this.playerAnim[14] = loadAnimation(spriteSheet, 1, 7, 6);
+	    this.playerAnim[15] = loadAnimation(spriteSheet, 1, 7, 7);
+	}
+	private Animation loadAnimation(SpriteSheet spriteSheet, int startX, int endX, int y)//loadAnimation permet de faire défiler les sprites pour créer les animations.
+	{
+	    Animation animation = new Animation();
+	    for (int x = startX; x < endX; x++) {
+	        animation.addFrame(spriteSheet.getSprite(x, y), 100);
+	    }
+	    return animation;
+	}
+	
+	public void pickUpWeapon(Armes a)//Quand le joueur ramasse une arme
+	{
+		if(this.nbArmes < 3)
+		{
+			this.nbArmes ++;
+			if(a instanceof Pistolet)
+			{
+				this.playerWeapons[currentWeapon] = new Pistolet (new Neufmm());
+				this.playerAmmo[0] = 24;
+			}
+		}
+	}
+	public void shoot(Armes a)//Quand le joueur tire
+	{
+		if(a instanceof Pistolet) this.playerAmmo[0]--;
+		//new Balles(this.playerWeapons[this.currentWeapon].getMunition(), this);
+	}
+	public int getPlayerAmmo(int i)
+	{
+		return this.playerAmmo[i];
+	}
+	public Armes getPlayerCurrentWeapon(int i)
+	{
+		return this.playerWeapons[i];
+	}
+	public byte getCurrentWeaponIndex()
+	{
+		return this.currentWeapon;
+	}
+	public float getX()
+	{
+		return this.x;
+	}
+	public float getY()
+	{
+		return this.y;
+	}
+	public void setX(float i)
+	{
+		this.x = i;
+	}
+	public void setY(float i)
+	{
+		this.y = i;
+	}
+	public float getMoveSpeed()
+	{
+		return this.moveSpeed;
+	}
+}
