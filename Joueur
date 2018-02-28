@@ -1,8 +1,12 @@
 package Joueurs;
 
+
 import org.newdawn.slick.Animation;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
+import org.newdawn.slick.geom.Vector2f;
 
 import Armes.Armes;
 import Armes.Pistolet;
@@ -17,8 +21,9 @@ public class Joueur {
 	private SpriteSheet spriteSheet;
 	private Armes armes;
 	public Viseur playerViseur;
+	private Vector2f pos, speed;
 	//Tableaux:
-	public Animation[] playerAnim = new Animation[16];
+	private Animation[] playerAnim = new Animation[16];
 	private Armes[] playerWeapons = new Armes[3]; //Tableau contenant les armes du joueur.
 	private int[] playerAmmo = new int[3];	//Tableau contenant le nombre de munitions du joueur pour chaque type d'armes.
 	//Floats:
@@ -55,7 +60,21 @@ public class Joueur {
 		}
 		loadPlayerAnim();
 		this.playerViseur = new Viseur();
+		this.pos = new Vector2f(500, 500);
 		
+	}
+	public void update( int t )
+	{
+		if(moving)
+		{
+			Vector2f realSpeed = speed.copy();
+			realSpeed.scale((t/1000.0f * 200));
+			pos.add(realSpeed);
+		}
+	}
+	public void render (GameContainer c, Graphics g)
+	{
+		g.drawAnimation(this.getAnimation(this.direction + (this.moving ? 8 : 0)),(int) this.getPos().getX(),(int) this.getPos().getY());
 	}
 	
 	public void loadPlayerAnim()//loadPlayerAnim() charge les animations du sprite du joueurs.
@@ -135,5 +154,17 @@ public class Joueur {
 	public float getMoveSpeed()
 	{
 		return this.moveSpeed;
+	}
+	public Animation getAnimation(int i)
+	{
+		return this.playerAnim[i];
+	}
+	public Vector2f getPos()
+	{
+		return this.pos;
+	}
+	public void setSpeed(float x, float y)
+	{
+		this.speed = new Vector2f(x, y);
 	}
 }
